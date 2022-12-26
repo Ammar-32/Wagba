@@ -2,11 +2,7 @@
     <string name="app_name">Wagba</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="order_items">
-        <item>x1 Big Mac Sandwich</item>
-        <item>x2 Large Fries</item>
-        <item>x1 Coca Cola</item>
-    </string-array>
+
     <string-array name="gates">
         <item>Gate 3</item>
         <item>Gate 4</item>

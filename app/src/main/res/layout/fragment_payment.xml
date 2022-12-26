@@ -65,20 +65,21 @@
                 <ListView
                     android:id="@+id/listView"
                     android:layout_width="209dp"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/order_items" />
+                    android:layout_height="150dp"
+                     />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:gravity="right"
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/order_summary_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="2dp"
-                        android:text="550"
+
                         android:textColor="@android:color/holo_green_dark"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -117,6 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ordersummary" />
 
     <Spinner
+        android:id="@+id/delivery_gate_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
@@ -139,6 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ordersummary" />
 
     <Spinner
+        android:id="@+id/delivery_time_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
@@ -161,6 +164,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ordersummary" />
 
     <Spinner
+        android:id="@+id/payment_method_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -171,7 +175,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ordersummary" />
 
     <Button
-        android:id="@+id/proceedtopayment"
+        android:id="@+id/confirm_order"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

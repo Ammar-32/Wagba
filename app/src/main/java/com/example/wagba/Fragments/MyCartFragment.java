@@ -9,45 +9,45 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.example.wagba.Adapter.OrderItemAdapter;
+import com.example.wagba.Database.OrderItemDao;
+import com.example.wagba.Database.OrderItemDatabase;
+import com.example.wagba.Database.OrderItemModel;
 import com.example.wagba.Model.FoodModel;
 import com.example.wagba.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyCartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class MyCartFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
 
+    RecyclerView recyclerView;
+    Button procceedToPaymentBtn;
+    OrderItemAdapter adapter;
+    TextView orderTotalPrice;
+    TextView deliveryFees;
+    TextView orderTotalPricePlusDeliveryFees;
+
     public MyCartFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyCartFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MyCartFragment newInstance(String param1, String param2) {
         MyCartFragment fragment = new MyCartFragment();
         Bundle args = new Bundle();
@@ -69,19 +69,55 @@ public class MyCartFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Button procceedToPaymentBtn = (Button)getView().findViewById(R.id.proceedtopayment);
+        OrderItemDatabase db = Room.databaseBuilder(getActivity().getApplicationContext(), OrderItemDatabase.class, "order_items_database").allowMainThreadQueries().build();
+        OrderItemDao orderItemDao = db.orderItemDao();
+        procceedToPaymentBtn = (Button)getView().findViewById(R.id.proceedtopayment);
         procceedToPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavDirections action = MyCartFragmentDirections.actionMycartToPaymentFragment();
-                Navigation.findNavController(procceedToPaymentBtn).navigate(action);
+                if(orderItemDao.getAll().size() != 0) {
+                    NavDirections action = MyCartFragmentDirections.actionMycartToPaymentFragment();
+                    Navigation.findNavController(procceedToPaymentBtn).navigate(action);
+                }else{
+                    Toast.makeText(getActivity().getApplicationContext(), "Cart is Empty !", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        RecyclerView recyclerView = getView().findViewById(R.id.recycler_mycart);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
+        recyclerView = getView().findViewById(R.id.recycler_mycart);
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<OrderItemModel> orderItems = orderItemDao.getAll();
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+                        adapter = new OrderItemAdapter(orderItems);
+                        recyclerView.setAdapter(adapter);
+
+                    }
+                });
+            }
+        }).start();
+
+
+        orderTotalPrice = view.findViewById(R.id.order_total_price);
+        deliveryFees = view.findViewById(R.id.delivery_fees);
+        orderTotalPricePlusDeliveryFees = view.findViewById(R.id.order_total_plus_deliveryfees);
+        if(orderItemDao.getTotalPriceSum() == null)
+        {
+            orderTotalPrice.setText("0");
+            deliveryFees.setText("0");
+            orderTotalPricePlusDeliveryFees.setText("0");
+        }else {
+            orderTotalPrice.setText(orderItemDao.getTotalPriceSum().toString());
+            deliveryFees.setText("20.0");
+            orderTotalPricePlusDeliveryFees.setText(String.valueOf(Float.parseFloat(orderTotalPrice.getText().toString()) + 20.0F));
+        }
 
     }
 

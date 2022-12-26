@@ -4,13 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.wagba.Adapter.FoodAdapter;
+import com.example.wagba.Database.OrderItemDao;
+import com.example.wagba.Database.OrderItemDatabase;
 import com.example.wagba.Model.FoodModel;
 import com.example.wagba.R;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -29,6 +35,7 @@ public class FoodListFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference foodRef;
     FoodAdapter foodAdapter;
+    Button viewCartButton;
 
     public FoodListFragment() {
     }
@@ -68,9 +75,22 @@ public class FoodListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_food_list, container, false);
 
-            FoodListFragmentArgs args = FoodListFragmentArgs.fromBundle(getArguments());
-            String restaurantID = args.getRestaurantID();
-            String restaurantName = args.getRestaurantName();
+        FoodListFragmentArgs args = FoodListFragmentArgs.fromBundle(getArguments());
+        String restaurantID = args.getRestaurantID();
+        String restaurantName = args.getRestaurantName();
+
+        viewCartButton = view.findViewById(R.id.goToCart);
+        viewCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavDirections action = FoodListFragmentDirections.actionFoodListFragmentToMycart();
+                Navigation.findNavController(view).navigate(action);
+            }
+        });
+
+
+        OrderItemDatabase cartDatabase = Room.databaseBuilder(getActivity().getApplicationContext(), OrderItemDatabase.class, "order_items_database").allowMainThreadQueries().build();
+
 
         TextView toolbarTitle = (TextView) getActivity().findViewById(R.id.titletoolbar);
         toolbarTitle.setText(restaurantName + " Menu");
@@ -87,7 +107,7 @@ public class FoodListFragment extends Fragment {
                     new FirebaseRecyclerOptions.Builder<FoodModel>()
                             .setQuery(foodRef.orderByChild("restaurantID").equalTo(restaurantID), FoodModel.class)
                             .build();
-            foodAdapter = new FoodAdapter(options);
+            foodAdapter = new FoodAdapter(options, cartDatabase);
             recyclerView.setAdapter(foodAdapter);
         }
 
