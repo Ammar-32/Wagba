@@ -9,6 +9,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.room.Room;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -24,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wagba.Database.OrderItemDao;
+import com.example.wagba.Database.OrderItemDatabase;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -124,6 +127,9 @@ public class NavHostActivity extends AppCompatActivity {
         logoutDialogBuilder.setTitle("Logout").setMessage("Are you sure you want to logout?").setCancelable(true).setPositiveButton("Logout", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                OrderItemDatabase db = Room.databaseBuilder(getApplicationContext(), OrderItemDatabase.class, "order_items_database").allowMainThreadQueries().build();
+                OrderItemDao orderItemDao = db.orderItemDao();
+                orderItemDao.clearCart();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
