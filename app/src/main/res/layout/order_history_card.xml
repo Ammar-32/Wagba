@@ -36,22 +36,51 @@
             app:layout_constraintVertical_bias="0.0">
 
             <TextView
-                android:id="@+id/textEstimatedTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Order Number"
+                android:text="Order ID"
                 android:textAllCaps="true"
                 android:textColor="@color/grey"
                 android:textSize="15sp" />
 
 
             <TextView
-                android:id="@+id/textTime"
+                android:id="@+id/order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+
                 android:text="#000001"
                 android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/order_history_delivery_gate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gate 3"
+                android:textAllCaps="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/order_history_delivery_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:00 PM"
+                android:textAllCaps="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/order_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Order Requested"
+                android:textColor="@color/orange"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -67,7 +96,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ListView
-                android:id="@+id/listView"
+                android:id="@+id/order_history_list_view"
                 android:layout_width="209dp"
                 android:layout_height="150dp"
                  />
@@ -79,6 +108,7 @@
             android:gravity="right"
             >
             <TextView
+                android:id="@+id/order_history_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="550"

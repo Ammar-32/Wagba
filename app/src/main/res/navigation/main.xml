@@ -53,7 +53,11 @@
         android:id="@+id/paymentFragment"
         android:name="com.example.wagba.Fragments.PaymentFragment"
         android:label="Payment"
-        tools:layout="@layout/fragment_payment" />
+        tools:layout="@layout/fragment_payment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_orderhistory"
+            app:destination="@id/orderhistory" />
+    </fragment>
     <fragment
         android:id="@+id/profile"
         android:name="com.example.wagba.Fragments.ProfileFragment"

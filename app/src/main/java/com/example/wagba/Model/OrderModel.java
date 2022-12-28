@@ -13,10 +13,11 @@ public class OrderModel {
     private String paymentMethod;
     private List<OrderItemModel> orderItems;
     private String orderStatus;
+    private String price;
 
     public OrderModel() {}  // Required empty constructor for Firebase
 
-    public OrderModel(String orderID, String userFullName, String userPhoneNumber, String deliveryTime, String deliveryGate, String paymentMethod, List<OrderItemModel> orderItems, String orderStatus) {
+    public OrderModel(String orderID, String userFullName, String userPhoneNumber, String deliveryTime, String deliveryGate, String paymentMethod, List<OrderItemModel> orderItems, String orderStatus, String price) {
         this.orderID = orderID;
         this.userFullName = userFullName;
         this.userPhoneNumber = userPhoneNumber;
@@ -25,6 +26,7 @@ public class OrderModel {
         this.paymentMethod = paymentMethod;
         this.orderItems = orderItems;
         this.orderStatus = orderStatus;
+        this.price = price;
     }
 
     public String getOrderID() {
@@ -89,6 +91,14 @@ public class OrderModel {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }
 

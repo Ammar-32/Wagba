@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.room.Room;
 
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class PaymentFragment extends Fragment {
@@ -114,6 +117,7 @@ public class PaymentFragment extends Fragment {
                 order.setDeliveryGate(deliveryGateSpinner.getSelectedItem().toString()); // get the selected delivery gate
                 order.setPaymentMethod(paymentMethodSpinner.getSelectedItem().toString()); // get the selected payment method
                 order.setOrderStatus("Order Requested");
+                order.setPrice(String.valueOf(Float.parseFloat(orderItemDao.getTotalPriceSum().toString()) + 20.0F));
 
                 ordersRef.child(order.getOrderID()).setValue(order);
                 orderItemDao.clearCart();
@@ -125,6 +129,10 @@ public class PaymentFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Dismiss the dialog
+
+                        NavDirections action = PaymentFragmentDirections.actionPaymentFragmentToOrderhistory();
+                        Navigation.findNavController(view).navigate(action);
+
                         dialog.dismiss();
                     }
                 });
@@ -141,6 +149,6 @@ public class PaymentFragment extends Fragment {
 
     public String generateUniqueId() {
         String uuid = UUID.randomUUID().toString();
-        return uuid.substring(0, 6);
+        return uuid.substring(0, 6).toUpperCase(Locale.ROOT);
     }
 }
