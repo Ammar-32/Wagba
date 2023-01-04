@@ -13,20 +13,15 @@
         android:id="@+id/mycart"
         android:icon="@drawable/ic_cart"
         android:title="My Cart"/>
-    <item
-        android:id="@+id/ordertracking"
-        android:icon="@drawable/ic_track_order"
-        android:title="Track Order"/>
+
     <item
         android:id="@+id/orderhistory"
         android:icon="@drawable/ic_order_history"
 
         android:title="Order History"/>
-    <item
-        android:id="@+id/logout"
-        android:icon="@drawable/ic_logout"
-        android:title="Logout"
-        />
 
-
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
 </menu>

@@ -9,6 +9,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.room.Room;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PaymentFragment extends Fragment {
 
@@ -108,38 +115,90 @@ public class PaymentFragment extends Fragment {
         confirmOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OrderModel order = new OrderModel();
-                order.setOrderID(generateUniqueId()); // generate a unique ID for the order
-                order.setOrderItems(orderItemDao.getAll()); // get the order items from the Room database
-                order.setUserFullName(user.getFullName()); // get the user's full name
-                order.setUserPhoneNumber(user.getPhoneNumber()); // get the user's phone number
-                order.setDeliveryTime(deliveryTimeSpinner.getSelectedItem().toString()); // get the selected delivery time
-                order.setDeliveryGate(deliveryGateSpinner.getSelectedItem().toString()); // get the selected delivery gate
-                order.setPaymentMethod(paymentMethodSpinner.getSelectedItem().toString()); // get the selected payment method
-                order.setOrderStatus("Order Requested");
-                order.setPrice(String.valueOf(Float.parseFloat(orderItemDao.getTotalPriceSum().toString()) + 20.0F));
+                // Get the current time
+                Calendar calendar = Calendar.getInstance();
+                long currentTime = calendar.getTimeInMillis();
 
-                ordersRef.child(order.getOrderID()).setValue(order);
-                orderItemDao.clearCart();
-                // Display an alert dialog with a message
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Order Placed Successfully");
-                builder.setMessage("Thank you for placing your order!");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Dismiss the dialog
+                // Get the delivery time string in the "HH:mm" format
+                String deliveryTime = deliveryTimeSpinner.getSelectedItem().toString();
 
-                        NavDirections action = PaymentFragmentDirections.actionPaymentFragmentToOrderhistory();
-                        Navigation.findNavController(view).navigate(action);
+                // Create a SimpleDateFormat object for parsing the delivery time string
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                // Set the calendar's time to the current time
+                calendar.setTimeInMillis(currentTime);
+
+                // Parse the delivery time string as a relative time from the current time
+                Date date = null;
+                try {
+                    date = sdf.parse(deliveryTime);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                // Set the calendar's hour and minute to the parsed delivery time
+                calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+                calendar.set(Calendar.MINUTE, date.getMinutes());
+
+                // Get the delivery time in milliseconds
+                long deliveryTimeMillis = calendar.getTimeInMillis();
+
+                // Calculate the difference between the current time and delivery time
+                long timeDifference = deliveryTimeMillis - currentTime;
+
+                // Calculate the time difference in hours as the absolute value of the difference
+                long timeDifferenceHours = Math.abs(TimeUnit.MILLISECONDS.toHours(timeDifference));
+
+                if (timeDifferenceHours >= 2) {
+                    // Place the order if the difference is greater than or equal to 2 hours
+                    OrderModel order = new OrderModel();
+                    order.setOrderID(generateUniqueId()); // generate a unique ID for the order
+                    order.setOrderItems(orderItemDao.getAll()); // get the order items from the Room database
+                    order.setUserFullName(user.getFullName()); // get the user's full name
+                    order.setUserPhoneNumber(user.getPhoneNumber()); // get the user's phone number
+                    order.setDeliveryTime(deliveryTimeSpinner.getSelectedItem().toString()); // get the selected delivery time
+                    order.setDeliveryGate(deliveryGateSpinner.getSelectedItem().toString()); // get the selected delivery gate
+                    order.setPaymentMethod(paymentMethodSpinner.getSelectedItem().toString()); // get the selected payment method
+                    order.setOrderStatus("Order Requested");
+                    order.setPrice(String.valueOf(Float.parseFloat(orderItemDao.getTotalPriceSum().toString()) + 20.0F));
+
+                    ordersRef.child(order.getOrderID()).setValue(order);
+                    orderItemDao.clearCart();
+                    // Display an alert dialog with a message
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Order Placed Successfully");
+                    builder.setMessage("Thank you for placing your order!");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Dismiss the dialog
+
+                            NavDirections action = PaymentFragmentDirections.actionPaymentFragmentToOrderhistory();
+                            Navigation.findNavController(view).navigate(action);
+
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                } else {
+                    // Display an error message if the difference is less than 2 hours
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Sorry");
+                    builder.setMessage("Please select a delivery time at least 2 hours from now.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Dismiss the dialog
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
         });
+
 
 
 

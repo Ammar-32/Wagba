@@ -21,6 +21,9 @@ public class User {
         this.gender = gender;
     }
 
+    public User() {
+    }
+
     @NonNull
     public String getEmail() {
         return email;

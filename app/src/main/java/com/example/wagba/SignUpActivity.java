@@ -28,6 +28,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -43,8 +45,11 @@ public class SignUpActivity extends AppCompatActivity {
     TextView loginBtn;
     ProgressBar progressBar;
 
+    FirebaseDatabase database;
+    DatabaseReference userRef;
+
     FirebaseAuth mAuth;
-    private UserDao userDao = MyApplication.getUserDao();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,8 @@ public class SignUpActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_sign_up);
 
-
+        database = FirebaseDatabase.getInstance("https://wagba-ed603-default-rtdb.europe-west1.firebasedatabase.app");
+        userRef = database.getReference("User");
 
         // Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -149,7 +155,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                                     // Store date locally in ROOM Database
                                     User user = new User(email, fullName, phoneNumber, finalGender);
-                                    userDao.insert(user);
+                                    userRef.child(firebaseUser.getUid()).setValue(user);
+
 
                                 } else {
                                     // If sign in fails, display a message to the user.

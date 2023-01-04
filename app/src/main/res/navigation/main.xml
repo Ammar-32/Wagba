@@ -29,11 +29,7 @@
         android:name="com.example.wagba.Fragments.OrderHistoryFragment"
         android:label="Order History"
         tools:layout="@layout/fragment_order_history" />
-    <fragment
-        android:id="@+id/ordertracking"
-        android:name="com.example.wagba.Fragments.TrackOrderFragment"
-        android:label="Track Order"
-        tools:layout="@layout/fragment_track_order" />
+
     <fragment
         android:id="@+id/foodListFragment"
         android:name="com.example.wagba.Fragments.FoodListFragment"

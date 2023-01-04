@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:background="@color/orange">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/profileimg"
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="Ammar Moataz"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/viewsupporter"
@@ -44,22 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="18p6278\u0040eng.asu.edu.eg"
-        android:textColor="@color/grey"
+        android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/profileimg"
         app:layout_constraintTop_toBottomOf="@id/viewsupporter" />
 
-    <View
 
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/orange"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileimg"
-        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

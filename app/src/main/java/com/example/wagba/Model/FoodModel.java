@@ -6,16 +6,18 @@ public class FoodModel {
     private String foodDescription;
     private String foodPrice;
     private String restaurantID;
+    private String foodAvailability;
 
     public FoodModel() {
     }
 
-    public FoodModel(String foodName, String foodImage, String foodDescription, String foodPrice, String restaurantID) {
+    public FoodModel(String foodName, String foodImage, String foodDescription, String foodPrice, String restaurantID, String foodAvailability) {
         this.foodName = foodName;
         this.foodImage = foodImage;
         this.foodDescription = foodDescription;
         this.foodPrice = foodPrice;
         this.restaurantID = restaurantID;
+        this.foodAvailability = foodAvailability;
     }
 
     public String getFoodName() {
@@ -56,5 +58,13 @@ public class FoodModel {
 
     public void setRestaurantID(String restaurantID) {
         this.restaurantID = restaurantID;
+    }
+
+    public String getFoodAvailability() {
+        return foodAvailability;
+    }
+
+    public void setFoodAvailability(String foodAvailability) {
+        this.foodAvailability = foodAvailability;
     }
 }

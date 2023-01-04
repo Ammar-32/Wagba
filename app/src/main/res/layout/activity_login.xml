@@ -52,6 +52,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_editext"
             android:hint="E-mail"
+            android:text="test@ammar.com"
             android:inputType="textEmailAddress"
             android:paddingLeft="18dp" />
 
@@ -60,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="14dp"
+            android:text="test123"
             android:background="@drawable/bg_editext"
             android:hint="Password"
             android:inputType="textPassword"

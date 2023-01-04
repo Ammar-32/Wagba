@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wagba.Database.User;
+import com.example.wagba.Database.UserDao;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -35,18 +37,25 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
 
+    FirebaseDatabase database;
+    DatabaseReference userRef;
+
     FirebaseAuth mAuth;
+
+    User loggedInUser;
+
+    private UserDao userDao = MyApplication.getUserDao();
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(LoginActivity.this, NavHostActivity.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+//        if(currentUser != null){
+//            Intent intent = new Intent(LoginActivity.this, NavHostActivity.class);
+//            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }
     }
 
     @Override
@@ -58,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        database = FirebaseDatabase.getInstance("https://wagba-ed603-default-rtdb.europe-west1.firebasedatabase.app");
+        userRef = database.getReference("User");
 
         // Getting Views
         emailTextBox = (EditText) findViewById(R.id.emailTextBox);
@@ -84,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 String email;
                 String password;
+
                 email = emailTextBox.getText().toString();
                 password = passwordTextBox.getText().toString();
 
@@ -109,6 +122,20 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
                                 if(task.isSuccessful()) {
+                                    FirebaseUser firebaseUser = task.getResult().getUser();
+                                    userRef.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            loggedInUser = snapshot.getValue(User.class);
+                                            userDao.insert(loggedInUser);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                     Intent intent = new Intent(LoginActivity.this, NavHostActivity.class);
                                      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);

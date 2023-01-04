@@ -8,8 +8,8 @@
         <item>Gate 4</item>
     </string-array>
     <string-array name="times">
-        <item>12:00 PM</item>
-        <item>3:00 PM</item>
+        <item>12:00</item>
+        <item>15:00</item>
     </string-array>
     <string-array name="payment_methods">
         <item>Cash On Delivery </item>

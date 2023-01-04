@@ -34,41 +34,48 @@ public class FoodAdapter extends FirebaseRecyclerAdapter<FoodModel, FoodViewHold
         holder.foodDescription.setText(model.getFoodDescription());
         holder.foodPrice.setText(model.getFoodPrice());
         Picasso.get().load(model.getFoodImage()).into(holder.foodImage);
-        holder.itemView.findViewById(R.id.addicon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextView itemCountTextView = holder.itemView.findViewById(R.id.itemcount);
-                Integer itemCount = Integer.parseInt(itemCountTextView.getText().toString());
-                itemCount++;
-                Float totalPrice = Float.parseFloat(model.getFoodPrice()) * itemCount;
-                itemCountTextView.setText(itemCount.toString());
-                OrderItemModel orderItem = new OrderItemModel(getRef(pos).getKey(), model.getFoodName(), itemCount.toString(), totalPrice.toString());
-                orderItemDao.insert(orderItem);
-            }
-        });
 
-        holder.itemView.findViewById(R.id.removeicon).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextView itemCountTextView = holder.itemView.findViewById(R.id.itemcount);
-                Integer itemCount = Integer.parseInt(itemCountTextView.getText().toString());
-                if(itemCount == 0)
-                {
-                    return;
+        if(model.getFoodAvailability().equals("Available")) {
+            holder.itemView.findViewById(R.id.addicon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView itemCountTextView = holder.itemView.findViewById(R.id.itemcount);
+                    Integer itemCount = Integer.parseInt(itemCountTextView.getText().toString());
+                    itemCount++;
+                    Float totalPrice = Float.parseFloat(model.getFoodPrice()) * itemCount;
+                    itemCountTextView.setText(itemCount.toString());
+                    OrderItemModel orderItem = new OrderItemModel(getRef(pos).getKey(), model.getFoodName(), itemCount.toString(), totalPrice.toString());
+                    orderItemDao.insert(orderItem);
                 }
-                itemCount--;
-                Float totalPrice = Float.parseFloat(model.getFoodPrice()) * itemCount;
-                itemCountTextView.setText(itemCount.toString());
-                OrderItemModel orderItem = new OrderItemModel(getRef(pos).getKey(), model.getFoodName(), itemCount.toString(), totalPrice.toString());
-                orderItemDao.update(orderItem);
+            });
 
-                if(itemCount == 0)
-                {
-                    orderItemDao.deleteOrderItemById(getRef(pos).getKey());
+            holder.itemView.findViewById(R.id.removeicon).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView itemCountTextView = holder.itemView.findViewById(R.id.itemcount);
+                    Integer itemCount = Integer.parseInt(itemCountTextView.getText().toString());
+                    if (itemCount == 0) {
+                        return;
+                    }
+                    itemCount--;
+                    Float totalPrice = Float.parseFloat(model.getFoodPrice()) * itemCount;
+                    itemCountTextView.setText(itemCount.toString());
+                    OrderItemModel orderItem = new OrderItemModel(getRef(pos).getKey(), model.getFoodName(), itemCount.toString(), totalPrice.toString());
+                    orderItemDao.update(orderItem);
+
+                    if (itemCount == 0) {
+                        orderItemDao.deleteOrderItemById(getRef(pos).getKey());
+                    }
+
                 }
+            });
+        }else{
+            holder.itemView.findViewById(R.id.removeicon).setVisibility(View.GONE);
+            holder.itemView.findViewById(R.id.addicon).setVisibility(View.GONE);
+            itemCountTextView = holder.itemView.findViewById(R.id.itemcount);
+            itemCountTextView.setText("N/A");
 
-            }
-        });
+        }
     }
 
     @NonNull
